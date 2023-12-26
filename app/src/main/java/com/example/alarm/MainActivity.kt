@@ -3,41 +3,67 @@ package com.example.alarm
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.alarm.ui.theme.AlarmTheme
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val scheduler = AndroidAlarmScheduler(context = this)
         setContent {
             AlarmTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                var secondsText by remember {
+                    mutableStateOf("No Alarm")
+                }
+                var alarmTime: LocalDateTime? by remember {
+                    mutableStateOf(null)
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Greeting("Android")
+                    Text(
+                        text = secondsText,
+                        fontSize = 20.sp,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(onClick = {
+                            alarmTime = LocalDateTime.now().plusSeconds(10)
+                            secondsText = LocalDateTime.now().toString()
+                            alarmTime?.let {
+                                scheduler.schedule(item = it)
+                            }
+                        }) {
+                            Text(text = "Set Alarm")
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Button(onClick = {
+                            print("Cancelled Alarm ${LocalDateTime.now()}")
+                            alarmTime?.let {
+                                scheduler.cancel(item = it)
+                                secondsText = ""
+                                alarmTime = null
+                            }
+                        }) {
+                            Text(text = "Cancel Alarm")
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AlarmTheme {
-        Greeting("Android")
     }
 }
