@@ -7,6 +7,10 @@ import android.content.Intent
 class AlarmReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
         val alarmTime = intent?.getStringExtra("Alarm") ?: return
-        println("Alarm triggered : $alarmTime")
+        context?.let {
+            val service = AlarmNotificationService(context)
+            service.showNotification()
+            println("Alarm triggered : $alarmTime")
+        }
     }
 }
