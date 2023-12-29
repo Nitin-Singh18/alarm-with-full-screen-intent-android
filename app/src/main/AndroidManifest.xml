@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 <!--    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>-->
     <application
         android:name=".MyApp"
@@ -26,6 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".FullScreenActivity"
+            android:showOnLockScreen="true"/>
         <receiver android:name=".AlarmReceiver"/>
         <receiver android:name=".CancelNotificationReceiver"/>
     </application>
